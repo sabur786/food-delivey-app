@@ -1,14 +1,29 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { RouterModule, RouterOutlet } from '@angular/router';
+
 import { HeaderComponent } from './header/components/header.component';
+
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  imports: [
+    CommonModule, 
+    RouterModule, 
+    RouterOutlet,
+    HeaderComponent,
+    
+  ],
+  template: `
+    <div class="app-container">
+      <app-header></app-header>
+      <router-outlet></router-outlet>
+    </div>
+  `,
+  styleUrls: ['./app.component.css']
 })
+
 export class AppComponent {
-  title = 'food-delivey-app';
+  title = 'food-delivery-app';
 }
