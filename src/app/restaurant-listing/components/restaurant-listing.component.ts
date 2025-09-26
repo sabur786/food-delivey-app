@@ -5,11 +5,10 @@ import { Restaurant } from '../../Shared/models/Restaurant';
 import { RestaurantService } from '../service/restaurant.service';
 
 @Component({
-  selector: 'app-restaurant-listing', 
-  standalone: true,
-  imports: [CommonModule, RouterModule],
-  templateUrl: './restaurant-listing.component.html',
-  styleUrl: './restaurant-listing.component.css'
+    selector: 'app-restaurant-listing',
+    imports: [CommonModule, RouterModule],
+    templateUrl: './restaurant-listing.component.html',
+    styleUrl: './restaurant-listing.component.css'
 })
 
 export class RestaurantListingComponent implements OnInit {

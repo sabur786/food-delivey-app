@@ -7,11 +7,10 @@ import { FoodCataloguePage } from '../../Shared/models/FoodCataloguePage';
 import { Restaurant } from '../../Shared/models/Restaurant';
 
 @Component({
-  selector: 'app-food-catalogue',
-  standalone: true,
-  imports: [],
-  templateUrl: './food-catalogue.component.html',
-  styleUrl: './food-catalogue.component.css'
+    selector: 'app-food-catalogue',
+    imports: [],
+    templateUrl: './food-catalogue.component.html',
+    styleUrl: './food-catalogue.component.css'
 })
 export class FoodCatalogueComponent {
 

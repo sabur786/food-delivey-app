@@ -6,22 +6,20 @@ import { HeaderComponent } from './header/components/header.component';
 
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
-    CommonModule, 
-    RouterModule, 
-    RouterOutlet,
-    HeaderComponent,
-    
-  ],
-  template: `
+    selector: 'app-root',
+    imports: [
+        CommonModule,
+        RouterModule,
+        RouterOutlet,
+        HeaderComponent,
+    ],
+    template: `
     <div class="app-container">
       <app-header></app-header>
       <router-outlet></router-outlet>
     </div>
   `,
-  styleUrls: ['./app.component.css']
+    styleUrls: ['./app.component.css']
 })
 
 export class AppComponent {
