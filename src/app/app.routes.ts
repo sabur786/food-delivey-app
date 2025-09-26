@@ -3,5 +3,6 @@ import { RestaurantListingComponent } from './restaurant-listing/components/rest
 
 export const routes: Routes = [
   { path: '', redirectTo: 'restaurant-listing', pathMatch: 'full' },
-  { path: 'restaurant-listing', component: RestaurantListingComponent }
+  { path: 'restaurant-listing', component: RestaurantListingComponent },
+  { path: 'food-catalogue/:id', loadChildren: () => import('./food-catalogue/food-catalogue.module').then(m => m.FoodCatalogueModule) }
 ];
