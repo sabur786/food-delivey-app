@@ -1,88 +1,108 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { FooditemService } from '../service/fooditem.service';
 import { FoodItem } from '../../Shared/models/FoodItem';
 import { FoodCataloguePage } from '../../Shared/models/FoodCataloguePage';
 import { Restaurant } from '../../Shared/models/Restaurant';
 
 @Component({
-    selector: 'app-food-catalogue',
-    imports: [],
-    templateUrl: './food-catalogue.component.html',
-    styleUrl: './food-catalogue.component.css'
+  selector: 'app-food-catalogue',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  templateUrl: './food-catalogue.component.html',
+  styleUrl: './food-catalogue.component.css'
 })
-export class FoodCatalogueComponent {
+export class FoodCatalogueComponent implements OnInit {
 
-  restaurantId: number;
-  foodItemResponse: FoodCataloguePage;
+  restaurantId!: number;
+  foodItemResponse!: FoodCataloguePage;
   foodItemCart: FoodItem[] = [];
-  orderSummary: FoodCataloguePage;
 
-  constructor(private route: ActivatedRoute, private foodItemService: FooditemService, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute, 
+    private foodItemService: FooditemService, 
+    private router: Router
+  ) {}
 
-  foodItemsList: FoodItem[] = [];
-  restaurant: Restaurant | undefined;
-
-
-  ngOnInit() {
-
+  ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      this.restaurantId = + Number(params.get('id'));
+      this.restaurantId = Number(params.get('id'));
+      console.log('Restaurant ID from route:', this.restaurantId);
+      
+      // Call the service INSIDE the subscription
+      this.getFoodItemsByRestaurant(this.restaurantId);
     });
-
-    this.getFoodItemsByRestaurant(this.restaurantId);
-    
   }
 
-  
-  getFoodItemsByRestaurant(restaurant: number) {
-    this.foodItemService.getFoodItemsByRestaurant(restaurant).subscribe(
-      data => {
+  getFoodItemsByRestaurant(restaurantId: number): void {
+    this.foodItemService.getFoodItemsByRestaurant(restaurantId).subscribe({
+      next: (data) => {
         this.foodItemResponse = data;
+        console.log('Food items loaded:', this.foodItemResponse);
+      },
+      error: (err) => {
+        console.error('Error fetching food items:', err);
       }
-    )
+    });
   }
 
-  increment(food: any) {
-    food.quantity++;
-    const index = this.foodItemCart.findIndex(item => item.id === food.id);
-    if (index === -1) {
-      // If record does not exist, add it to the array
-      this.foodItemCart.push(food);
-    } else {
-      // If record exists, update it in the array
-      this.foodItemCart[index] = food;
-    }
+  increment(food: FoodItem): void {
+    food.quantity = (food.quantity || 0) + 1;
+    this.updateFoodItemCart(food);
   }
 
-  decrement(food: any) {
-    if (food.quantity > 0) {
+  decrement(food: FoodItem): void {
+    if (food.quantity && food.quantity > 0) {
       food.quantity--;
+      this.updateFoodItemCart(food);
+    }
+  }
 
-      const index = this.foodItemCart.findIndex(item => item.id === food.id);
-      if (this.foodItemCart[index].quantity == 0) {
+  private updateFoodItemCart(food: FoodItem): void {
+    const index = this.foodItemCart.findIndex(item => item.id === food.id);
+    
+    if (food.quantity === 0) {
+      if (index !== -1) {
         this.foodItemCart.splice(index, 1);
-      } else {
-        // If record exists, update it in the array
-        this.foodItemCart[index] = food;
       }
-
+    } else {
+      if (index === -1) {
+        this.foodItemCart.push({...food});
+      } else {
+        this.foodItemCart[index] = {...food};
+      }
     }
+    
+    console.log('Cart updated:', this.foodItemCart);
   }
 
-  onCheckOut() {
-    this.foodItemCart;
-    this.orderSummary = {
-      foodItemsList: [],
-      restaurant: null as any
+  onCheckOut(): void {
+    console.log('Checkout clicked. Cart items:', this.foodItemCart);
+    
+    // Filter items with quantity > 0
+    const itemsToCheckout = this.foodItemCart.filter(item => item.quantity > 0);
+    
+    if (itemsToCheckout.length === 0) {
+      alert('Please add items to cart before checkout');
+      return;
     }
-    this.orderSummary.foodItemsList = this.foodItemCart;
-    this.orderSummary.restaurant = this.foodItemResponse.restaurant;
-    this.router.navigate(['/orderSummary'], { queryParams: { data: JSON.stringify(this.orderSummary) } });
+
+    if (!this.foodItemResponse?.restaurant) {
+      alert('Restaurant information is missing');
+      return;
+    }
+
+    const orderSummary: FoodCataloguePage = {
+      foodItemsList: itemsToCheckout,
+      restaurant: this.foodItemResponse.restaurant
+    };
+
+    console.log('Navigating to order summary with data:', orderSummary);
+    
+    // FIX: Use the correct route path - match your routes exactly
+    this.router.navigate(['/order-summary'], { 
+      queryParams: { data: JSON.stringify(orderSummary) } 
+    });
   }
-
-
-
-
 }

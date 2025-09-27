@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, RouterOutlet } from '@angular/router';
 
 import { HeaderComponent } from './header/components/header.component';
+import { FoodCatalogueModule } from './food-catalogue/food-catalogue.module';
+import { OrderSummaryModule } from './order-summary/order-summary.module';
 
 
 @Component({
@@ -12,6 +14,8 @@ import { HeaderComponent } from './header/components/header.component';
         RouterModule,
         RouterOutlet,
         HeaderComponent,
+        FoodCatalogueModule, 
+        OrderSummaryModule
     ],
     template: `
     <div class="app-container">

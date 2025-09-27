@@ -1,0 +1,59 @@
+<div class="order-summary-container" *ngIf="orderSummary; else loading">
+    <h2>Order Summary</h2>
+    
+    <div class="restaurant-info">
+        <h3>{{ orderSummary.restaurant?.name }}</h3>
+        <p>{{ orderSummary.restaurant?.address }}, {{ orderSummary.restaurant?.city }}</p>
+    </div>
+
+    <table class="order-table">
+        <thead>
+            <tr>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Use safe navigation operator and check if array exists -->
+            <tr *ngFor="let item of orderSummary.foodItemsList; trackBy: trackByFoodId">
+                <td>{{ item.itemName }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>$ {{ item.price }}</td>
+                <td>$ {{ (item.quantity || 0) * (item.price || 0) }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Show message if no items -->
+    <div *ngIf="!orderSummary.foodItemsList || orderSummary.foodItemsList.length === 0" class="no-items">
+        <p>No items in order</p>
+    </div>
+
+    <div class="order-total">
+        <strong>Total: $ {{ total }}</strong>
+    </div>
+
+    <div class="action-buttons">
+        <button class="btn btn-primary" (click)="saveOrder()">Place Order</button>
+        <button class="btn btn-secondary" (click)="navigateToHome()">Cancel</button>
+    </div>
+
+    <!-- Success Dialog -->
+    <div *ngIf="showDialog" class="dialog-overlay">
+        <div class="dialog">
+            <h3>Order Placed Successfully!</h3>
+            <p>Your order has been placed. Thank you for your purchase!</p>
+            <button class="btn btn-primary" (click)="closeDialog()">OK</button>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Template -->
+<ng-template #loading>
+    <div class="loading-state">
+        <p>Loading order summary...</p>
+        <button class="btn btn-secondary" (click)="navigateToHome()">Back to Home</button>
+    </div>
+</ng-template>
