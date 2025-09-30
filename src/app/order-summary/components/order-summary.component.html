@@ -1,5 +1,5 @@
 <div class="order-summary-container" *ngIf="orderSummary; else loading">
-    <h2>Order Summary</h2>
+    <h1>Order Summary</h1>
     
     <div class="restaurant-info">
         <h3>{{ orderSummary.restaurant?.name }}</h3>
@@ -24,7 +24,12 @@
                 <td>$ {{ (item.quantity || 0) * (item.price || 0) }}</td>
             </tr>
         </tbody>
-    </table>
+              <tfoot>
+        <tr>
+          <td colspan="2">Total</td>
+          <td>Total: $ {{ total }} </td>
+        </tr>
+      </tfoot>
 
     <!-- Show message if no items -->
     <div *ngIf="!orderSummary.foodItemsList || orderSummary.foodItemsList.length === 0" class="no-items">
@@ -32,17 +37,17 @@
     </div>
 
     <div class="order-total">
-        <strong>Total: $ {{ total }}</strong>
+       
     </div>
-
+    </table>
     <div class="action-buttons">
         <button class="btn btn-primary" (click)="saveOrder()">Place Order</button>
         <button class="btn btn-secondary" (click)="navigateToHome()">Cancel</button>
     </div>
 
     <!-- Success Dialog -->
-    <div *ngIf="showDialog" class="dialog-overlay">
-        <div class="dialog">
+    <div class="dialog-container" *ngIf="showDialog" >
+        <div class="dialog-box">
             <h3>Order Placed Successfully!</h3>
             <p>Your order has been placed. Thank you for your purchase!</p>
             <button class="btn btn-primary" (click)="closeDialog()">OK</button>
